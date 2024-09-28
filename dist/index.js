@@ -45534,10 +45534,7 @@ class CommentWriter {
         const comments = await octokitSubset.listComments();
         const existingComment = comments.data.find(v => v.body?.startsWith(common_1.SNAPSHOT_COMMENT_IDENTIFIER));
         if (existingComment) {
-            console.log({
-                message: 'Found an existing comment, updating...',
-                existingComment: existingComment
-            });
+            console.log('Found an existing comment, updating...');
             const response = await octokitSubset.updateComment({
                 comment_id: existingComment.id,
                 body: commentBody

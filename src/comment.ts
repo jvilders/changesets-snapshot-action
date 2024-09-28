@@ -60,10 +60,7 @@ export class CommentWriter {
     )
 
     if (existingComment) {
-      console.log({
-        message: 'Found an existing comment, updating...',
-        existingComment: existingComment
-      })
+      console.log('Found an existing comment, updating...')
       const response = await octokitSubset.updateComment({
         comment_id: existingComment.id,
         body: commentBody
