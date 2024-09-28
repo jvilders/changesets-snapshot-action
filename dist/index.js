@@ -45616,6 +45616,8 @@ const snapshotPublisher = new publisher_1.SnapshotPublisher(async () => {
     };
     const getPackages = async (cwd) => (await (0, get_packages_1.getPackages)(cwd)).packages;
     const setPublishCredentials = async (npm_token) => {
+        // This works for npm and pnpm, but modern yarn (possibly others) won't read
+        // .npmrc files
         await (0, exec_1.exec)('bash', [
             '-c',
             `echo "//registry.npmjs.org/:_authToken=${npm_token}" > "$HOME/.npmrc"`

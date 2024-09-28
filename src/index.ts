@@ -20,6 +20,8 @@ const snapshotPublisher = new SnapshotPublisher(async () => {
   const getPackages = async (cwd: string): Promise<Package[]> =>
     (await manyPkgGetPackages(cwd)).packages
   const setPublishCredentials = async (npm_token: string): Promise<void> => {
+    // This works for npm and pnpm, but modern yarn (possibly others) won't read
+    // .npmrc files
     await exec(
       'bash',
       [
