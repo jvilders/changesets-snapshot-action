@@ -45,9 +45,7 @@ export class SnapshotPublisher {
     return snapshots
   }
 
-  async publishSnapshots(
-    npm_token: string
-  ): Promise<{
+  async publishSnapshots(npm_token: string): Promise<{
     versionPrefix: string
     packages: Package[]
     snapshots: Snapshot[]

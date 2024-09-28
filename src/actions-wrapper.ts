@@ -3,9 +3,7 @@ import { Package, Snapshot } from './common'
 import * as core from '@actions/core'
 
 // move later
-export type PublishSnapshots = (
-  npm_token: string
-) => Promise<{
+export type PublishSnapshots = (npm_token: string) => Promise<{
   versionPrefix: string
   packages: Package[]
   snapshots: Snapshot[]
