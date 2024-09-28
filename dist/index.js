@@ -45473,8 +45473,11 @@ class ActionsWrapper {
             // Maybe set some things as action outputs, skip for now
             const { versionPrefix, snapshots } = await this.publishSnapshots(NPM_TOKEN);
             const associatedIssue = actionContext.context.issue;
-            console.log({ associatedIssue });
             if (associatedIssue.number !== undefined) {
+                console.log({
+                    message: 'Associated issue found, attempting to create/update comment',
+                    associatedIssue
+                });
                 // upsert comment
                 const octokit = actionContext.getOctoKit(GITHUB_TOKEN);
                 // const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -45516,10 +45519,10 @@ function makeComment({ snapshots, versionPrefix }) {
     }
     const header = `### 🚀 Snapshot Release (\`${versionPrefix}\`)`;
     const multiple = snapshots.length > 1;
-    const introMessage = `Your snapshot${multiple ? 's have' : ' has'} been published.**`;
+    const introMessage = `**Your snapshot${multiple ? 's have' : ' has'} been published**:`;
     const tableElement = formatTable(snapshots);
     const body = [header, introMessage, tableElement].join('\n');
-    return `${common_1.SNAPSHOT_COMMENT_IDENTIFIER}${body}`;
+    return `${common_1.SNAPSHOT_COMMENT_IDENTIFIER}\n${body}`;
 }
 class CommentWriter {
     makeComment;
@@ -45531,7 +45534,7 @@ class CommentWriter {
         const comments = await octokitSubset.listComments();
         const existingComment = comments.data.find(v => v.body?.startsWith(common_1.SNAPSHOT_COMMENT_IDENTIFIER));
         if (existingComment) {
-            console.log('Found an existing comment, updating...', existingComment);
+            console.log('Found an existing comment, updating...');
             const response = await octokitSubset.updateComment({
                 comment_id: existingComment.id,
                 body: commentBody
@@ -45606,17 +45609,19 @@ const writeComment = commentWriter.writeComment.bind(commentWriter);
 const snapshotPublisher = new publisher_1.SnapshotPublisher(async () => {
     const changesetBinary = path_1.default.join('node_modules/.bin/changeset');
     const versionPackages = async (snapshotPrefix) => {
-        (0, exec_1.exec)(changesetBinary, ['version', '--snapshot', snapshotPrefix]);
+        await (0, exec_1.exec)(changesetBinary, ['version', '--snapshot', snapshotPrefix]);
     };
     const getPackages = async (cwd) => (await (0, get_packages_1.getPackages)(cwd)).packages;
     const setPublishCredentials = async (npm_token) => {
-        (0, exec_1.exec)('bash', [
+        // This works for npm and pnpm, but modern yarn (possibly others) won't read
+        // .npmrc files
+        await (0, exec_1.exec)('bash', [
             '-c',
             `echo "//registry.npmjs.org/:_authToken=${npm_token}" > "$HOME/.npmrc"`
         ], { silent: true });
     };
     const publishPackages = async (snapshotPrefix) => {
-        (0, exec_1.exec)(changesetBinary, [
+        await (0, exec_1.exec)(changesetBinary, [
             'publish',
             '--no-git-tags',
             '--snapshot',
@@ -45682,11 +45687,14 @@ class SnapshotPublisher {
         await versionPackages(this.versionPrefix);
         // Get the packages, collect those that will have snapshots published
         const packages = await getPackages(process.cwd());
+        console.dir({ packages }, { depth: null });
         const snapshots = this.predictSnapshots({
             packages,
             versionPrefix: this.versionPrefix
         });
+        console.dir({ snapshots }, { depth: null });
         if (hasAtLeastOneElement(snapshots)) {
+            console.log('At least one snapshot was found, publishing snapshots...');
             // publish snapshot packages
             await setPublishCredentials(npm_token);
             await publishPackages(this.versionPrefix);

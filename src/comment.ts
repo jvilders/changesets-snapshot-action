@@ -23,12 +23,12 @@ export function makeComment({
 
   const header = `### 🚀 Snapshot Release (\`${versionPrefix}\`)`
   const multiple = snapshots.length > 1
-  const introMessage = `Your snapshot${multiple ? 's have' : ' has'} been published.**`
+  const introMessage = `**Your snapshot${multiple ? 's have' : ' has'} been published**:`
   const tableElement = formatTable(snapshots)
 
   const body = [header, introMessage, tableElement].join('\n')
 
-  return `${SNAPSHOT_COMMENT_IDENTIFIER}${body}`
+  return `${SNAPSHOT_COMMENT_IDENTIFIER}\n${body}`
 }
 
 export class CommentWriter {
@@ -60,7 +60,7 @@ export class CommentWriter {
     )
 
     if (existingComment) {
-      console.log('Found an existing comment, updating...', existingComment)
+      console.log('Found an existing comment, updating...')
       const response = await octokitSubset.updateComment({
         comment_id: existingComment.id,
         body: commentBody

@@ -15,12 +15,14 @@ const writeComment = commentWriter.writeComment.bind(commentWriter)
 const snapshotPublisher = new SnapshotPublisher(async () => {
   const changesetBinary = path.join('node_modules/.bin/changeset')
   const versionPackages = async (snapshotPrefix: string): Promise<void> => {
-    exec(changesetBinary, ['version', '--snapshot', snapshotPrefix])
+    await exec(changesetBinary, ['version', '--snapshot', snapshotPrefix])
   }
   const getPackages = async (cwd: string): Promise<Package[]> =>
     (await manyPkgGetPackages(cwd)).packages
   const setPublishCredentials = async (npm_token: string): Promise<void> => {
-    exec(
+    // This works for npm and pnpm, but modern yarn (possibly others) won't read
+    // .npmrc files
+    await exec(
       'bash',
       [
         '-c',
@@ -30,7 +32,7 @@ const snapshotPublisher = new SnapshotPublisher(async () => {
     )
   }
   const publishPackages = async (snapshotPrefix: string): Promise<void> => {
-    exec(changesetBinary, [
+    await exec(changesetBinary, [
       'publish',
       '--no-git-tags',
       '--snapshot',
