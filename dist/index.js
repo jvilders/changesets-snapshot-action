@@ -45476,7 +45476,7 @@ class ActionsWrapper {
             if (associatedIssue.number !== undefined) {
                 console.log({
                     message: 'Associated issue found, attempting to create/update comment',
-                    associatedIssue
+                    associatedIssue: JSON.stringify(associatedIssue, null, 2)
                 });
                 // upsert comment
                 const octokit = actionContext.getOctoKit(GITHUB_TOKEN);
@@ -45534,7 +45534,10 @@ class CommentWriter {
         const comments = await octokitSubset.listComments();
         const existingComment = comments.data.find(v => v.body?.startsWith(common_1.SNAPSHOT_COMMENT_IDENTIFIER));
         if (existingComment) {
-            console.log('Found an existing comment, updating...', existingComment);
+            console.log({
+                message: 'Found an existing comment, updating...',
+                existingComment: JSON.stringify(existingComment, null, 2)
+            });
             const response = await octokitSubset.updateComment({
                 comment_id: existingComment.id,
                 body: commentBody
@@ -45685,12 +45688,12 @@ class SnapshotPublisher {
         await versionPackages(this.versionPrefix);
         // Get the packages, collect those that will have snapshots published
         const packages = await getPackages(process.cwd());
-        console.log({ packages });
+        console.log({ packages: JSON.stringify(packages, null, 2) });
         const snapshots = this.predictSnapshots({
             packages,
             versionPrefix: this.versionPrefix
         });
-        console.log({ snapshots });
+        console.log({ snapshots: JSON.stringify(snapshots, null, 2) });
         if (hasAtLeastOneElement(snapshots)) {
             console.log('At least one snapshot was found, publishing snapshots...');
             // publish snapshot packages
