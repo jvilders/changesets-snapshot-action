@@ -43,13 +43,10 @@ steps:
 
 The action is intended for use in PR workflows where it will create/update a
 comment, but there's nothing inherently preventing it from working in response
-to other github events.
+to other GitHub events.
 
 ## Limitations/shortcomings
 
-- Currently only works for projects that read an `.npmrc` for publishing
-  credentials. That means npm, pnpm, probably others, but not modern yarn for
-  example.
 - Process of 'predicting' snapshot releases is more brittle than relying on
   output from the version command. Parsing stdout might be more reliable.
 - Logic gating the publishing step is based on this prediction logic too. If
@@ -59,7 +56,7 @@ to other github events.
 - Publishing credentials (the passed `NPM_TOKEN`) are put in an `.npmrc` file at
   the root of the project. This means this actions only works for projects that
   read an `.npmrc` for publishing credentials. That means npm, pnpm, probably
-  others, but not modern yarn for example. Also, if there already was a
+  others, but not modern Yarn for example. Also, if there already was a
   committed `.npmrc` file using interpolation for its credentials, this action
   would overwrite it.
 
@@ -71,5 +68,5 @@ to other github events.
   by [seek-oss](https://github.com/seek-oss)
 - [changesets-snapshot-action](https://github.com/the-guild-org/changesets-snapshot-action)
   by [the-guild-org](https://github.com/the-guild-org)
-- Repo setup by the
+- Repository setup by the
   [TypeScript action public template](https://github.com/actions/typescript-action)
