@@ -41,9 +41,9 @@ describe('makeComment', () => {
       versionPrefix: 'test'
     })
 
-    expect(comment)
-      .toBe(`<!-- changesetsSnapshotPrCommentKey -->### 🚀 Snapshot Release (\`test\`)
-Your snapshot has been published.**
+    expect(comment).toBe(`<!-- changesetsSnapshotPrCommentKey -->
+### 🚀 Snapshot Release (\`test\`)
+**Your snapshot has been published**:
 | Package | Version |
 |------|---------|
 | \`test-package\` | \`1.0.0-alpha-1234567890\` |`)
@@ -56,9 +56,9 @@ Your snapshot has been published.**
       versionPrefix: 'test'
     })
 
-    expect(comment)
-      .toBe(`<!-- changesetsSnapshotPrCommentKey -->### 🚀 Snapshot Release (\`test\`)
-Your snapshots have been published.**
+    expect(comment).toBe(`<!-- changesetsSnapshotPrCommentKey -->
+### 🚀 Snapshot Release (\`test\`)
+**Your snapshots have been published**:
 | Package | Version |
 |------|---------|
 | \`test-package\` | \`1.0.0-alpha-1234567890\` |
