@@ -108,8 +108,12 @@ export class ActionsWrapper {
         await this.publishSnapshots(NPM_TOKEN)
 
       const associatedIssue = actionContext.context.issue
-      console.log({ associatedIssue })
       if (associatedIssue.number !== undefined) {
+        console.log({
+          message:
+            'Associated issue found, attempting to create/update comment',
+          associatedIssue
+        })
         // upsert comment
         const octokit = actionContext.getOctoKit(GITHUB_TOKEN)
         // const octokit = github.getOctokit(GITHUB_TOKEN);

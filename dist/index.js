@@ -45473,8 +45473,11 @@ class ActionsWrapper {
             // Maybe set some things as action outputs, skip for now
             const { versionPrefix, snapshots } = await this.publishSnapshots(NPM_TOKEN);
             const associatedIssue = actionContext.context.issue;
-            console.log({ associatedIssue });
             if (associatedIssue.number !== undefined) {
+                console.log({
+                    message: 'Associated issue found, attempting to create/update comment',
+                    associatedIssue
+                });
                 // upsert comment
                 const octokit = actionContext.getOctoKit(GITHUB_TOKEN);
                 // const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -45682,11 +45685,14 @@ class SnapshotPublisher {
         await versionPackages(this.versionPrefix);
         // Get the packages, collect those that will have snapshots published
         const packages = await getPackages(process.cwd());
+        console.log({ packages });
         const snapshots = this.predictSnapshots({
             packages,
             versionPrefix: this.versionPrefix
         });
+        console.log({ snapshots });
         if (hasAtLeastOneElement(snapshots)) {
+            console.log('At least one snapshot was found, publishing snapshots...');
             // publish snapshot packages
             await setPublishCredentials(npm_token);
             await publishPackages(this.versionPrefix);
