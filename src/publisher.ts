@@ -62,13 +62,13 @@ export class SnapshotPublisher {
 
     // Get the packages, collect those that will have snapshots published
     const packages = await getPackages(process.cwd())
-    console.log({ packages: JSON.stringify(packages, null, 2) })
+    console.dir({ packages }, { depth: null })
 
     const snapshots = this.predictSnapshots({
       packages,
       versionPrefix: this.versionPrefix
     })
-    console.log({ snapshots: JSON.stringify(snapshots, null, 2) })
+    console.dir({ snapshots }, { depth: null })
 
     if (hasAtLeastOneElement(snapshots)) {
       console.log('At least one snapshot was found, publishing snapshots...')

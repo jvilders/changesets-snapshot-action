@@ -45476,7 +45476,7 @@ class ActionsWrapper {
             if (associatedIssue.number !== undefined) {
                 console.log({
                     message: 'Associated issue found, attempting to create/update comment',
-                    associatedIssue: JSON.stringify(associatedIssue, null, 2)
+                    associatedIssue
                 });
                 // upsert comment
                 const octokit = actionContext.getOctoKit(GITHUB_TOKEN);
@@ -45536,7 +45536,7 @@ class CommentWriter {
         if (existingComment) {
             console.log({
                 message: 'Found an existing comment, updating...',
-                existingComment: JSON.stringify(existingComment, null, 2)
+                existingComment: existingComment
             });
             const response = await octokitSubset.updateComment({
                 comment_id: existingComment.id,
@@ -45612,17 +45612,17 @@ const writeComment = commentWriter.writeComment.bind(commentWriter);
 const snapshotPublisher = new publisher_1.SnapshotPublisher(async () => {
     const changesetBinary = path_1.default.join('node_modules/.bin/changeset');
     const versionPackages = async (snapshotPrefix) => {
-        (0, exec_1.exec)(changesetBinary, ['version', '--snapshot', snapshotPrefix]);
+        await (0, exec_1.exec)(changesetBinary, ['version', '--snapshot', snapshotPrefix]);
     };
     const getPackages = async (cwd) => (await (0, get_packages_1.getPackages)(cwd)).packages;
     const setPublishCredentials = async (npm_token) => {
-        (0, exec_1.exec)('bash', [
+        await (0, exec_1.exec)('bash', [
             '-c',
             `echo "//registry.npmjs.org/:_authToken=${npm_token}" > "$HOME/.npmrc"`
         ], { silent: true });
     };
     const publishPackages = async (snapshotPrefix) => {
-        (0, exec_1.exec)(changesetBinary, [
+        await (0, exec_1.exec)(changesetBinary, [
             'publish',
             '--no-git-tags',
             '--snapshot',
@@ -45688,12 +45688,12 @@ class SnapshotPublisher {
         await versionPackages(this.versionPrefix);
         // Get the packages, collect those that will have snapshots published
         const packages = await getPackages(process.cwd());
-        console.log({ packages: JSON.stringify(packages, null, 2) });
+        console.dir({ packages }, { depth: null });
         const snapshots = this.predictSnapshots({
             packages,
             versionPrefix: this.versionPrefix
         });
-        console.log({ snapshots: JSON.stringify(snapshots, null, 2) });
+        console.dir({ snapshots }, { depth: null });
         if (hasAtLeastOneElement(snapshots)) {
             console.log('At least one snapshot was found, publishing snapshots...');
             // publish snapshot packages

@@ -112,7 +112,7 @@ export class ActionsWrapper {
         console.log({
           message:
             'Associated issue found, attempting to create/update comment',
-          associatedIssue: JSON.stringify(associatedIssue, null, 2)
+          associatedIssue
         })
         // upsert comment
         const octokit = actionContext.getOctoKit(GITHUB_TOKEN)
